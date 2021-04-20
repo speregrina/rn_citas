@@ -6,10 +6,11 @@
  * @flow strict-local
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text,StyleSheet, View, FlatList, TouchableHighlight } from 'react-native';
 import  Cita  from './components/Cita';
 import  Formulario  from './components/formulario';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
 
@@ -24,10 +25,25 @@ const App = () => {
   const [textLista, setTextLista] = useState('Mostrar Lista');
 
 
+  useEffect( ()=> {
+    const obtenerCitasStorage =  async () => {
+      try {
+        const citasStorage = await AsyncStorage.getItem('citsa');
+        console.log(citasStorage);
+        if(citasStorage){
+          setCitas(JSON.parse(citasStorage));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },[]);
+
   const eliminarCitas = id => {
-    setCitas( (citasActuales)=> {
-        return citasActuales.filter ( cita => cita.id !== id );
-    })
+    //Eliminar citas del storage
+    const citasFiltradas =  citas.filter( cita => cita.id !== id);
+    setCitas( citasFiltradas);
+    guardarCitasStorage(JSON.stringify(citasFiltradas));
   }
 
   const mostrarFL = () => {
@@ -37,6 +53,15 @@ const App = () => {
     }else{
       setTextLista('Mostrar Lista');
       setMostrarForm(true);
+    }
+  }
+
+  //almacenar citas en el storage
+  const guardarCitasStorage =  async (citasJSON) => {
+    try {
+      await AsyncStorage.setItem('citas',citsaJSON);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -52,6 +77,7 @@ const App = () => {
                   citas={citas}
                   setCitas={setCitas}
                   mostrarFL={mostrarFL}
+                  guardarCitasStorage = {guardarCitasStorage}
                  />
           ) : (
               <>

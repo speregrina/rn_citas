@@ -3,7 +3,7 @@ import { Text, View, TextInput,StyleSheet, Button, TouchableHighlight, Alert, Sc
 import DateTimePicker from '@react-native-community/datetimepicker';
 import shortid from 'shortid';
 
-const formulario = ({citas, setCitas,mostrarFL}) => {
+const formulario = ({citas, setCitas,mostrarFL, guardarCitasStorage}) => {
 
     const [date, setDate] = useState(new Date(1598051730000));
     const [mode, setMode] = useState('date');
@@ -60,8 +60,11 @@ const formulario = ({citas, setCitas,mostrarFL}) => {
         console.log(citas);
         console.log(cita);
         const nuevasCitas =  [...citas, cita];
-        console.log(nuevasCitas);
+       // console.log(nuevasCitas);
         setCitas(nuevasCitas);
+
+        //Pasar las nuevas citas al stoarge
+        guardarCitasStorage(JSON.stringify(nuevasCitas));
 
         //Cerrar form
         mostrarFL();
